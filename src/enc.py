@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, Union, List
 from .aes import encrypt, decrypt
 import hashlib, hmac
 import random
@@ -6,15 +6,15 @@ import random
 hash_function = hash_function = hashlib.sha256
 
 
-def encode_msg(msg: str, key: int) -> Dict[str, Union[str, bytes]]:
+def encode_msg(msg: str, key: int) -> Dict[str, Union[str, List[int]]]:
     return {
         "hash": hmac.new(str(key).encode(), msg.encode(), hash_function).hexdigest(),
-        "message": encrypt(str(key).encode(), msg)
+        "message": list(encrypt(str(key).encode(), msg))
     }
 
 
-def decode_msg(enc: Dict[str, Union[str, bytes]], key: int) -> str:
-    return decrypt(str(key).encode(), enc["message"]).decode()
+def decode_msg(enc: Dict[str, Union[str, List[int]]], key: int) -> str:
+    return decrypt(str(key).encode(), bytearray(enc["message"])).decode()
 
 
 MY_KEY=None
